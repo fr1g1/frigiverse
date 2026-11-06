@@ -25,11 +25,13 @@ Use current stable, mutually compatible versions. Before implementation, inspect
 
 **If verification shows a chosen technology is not stable or not compatible (e.g. HeroUI v3, Serwist with the current Next.js bundler), stop and ask the user with options. Do not silently substitute. Record the outcome in `docs/decisions/`.**
 
+The verification of 2026-11-06 and the resulting version pins are recorded in `docs/decisions/0024-verified-toolchain-2026-11.md` (TypeScript 6.0.x, ESLint 9, pnpm 11, `@serwist/turbopack`, re-authentication before account deletion).
+
 | Area | Technology |
 |---|---|
-| Language | TypeScript, strict mode |
-| Runtime | Node.js 24 LTS (pinned via `.nvmrc`, `engines`, Docker base images) |
-| Monorepo | pnpm workspaces (version pinned via `packageManager`), pnpm catalogs for shared dependency versions |
+| Language | TypeScript 6.0.x, strict mode (not 7 until typescript-eslint supports it); tsconfig `module: esnext`, `moduleResolution: bundler`, `paths` without `baseUrl` |
+| Runtime | Node.js 24 LTS (pinned via `.node-version`, `engines`, Docker base images; developers use fnm) |
+| Monorepo | pnpm 11 workspaces (version pinned via `packageManager`/`devEngines.packageManager`; settings in `pnpm-workspace.yaml`, build scripts approved via `allowBuilds`), pnpm catalogs for shared dependency versions |
 | Task orchestration | Turborepo |
 | Web applications | Next.js App Router (default); other frameworks only via the framework integration contract (§10a) and a user-approved ADR |
 | UI | HeroUI v3 |
@@ -40,10 +42,10 @@ Use current stable, mutually compatible versions. Before implementation, inspect
 | Authentication | Better Auth, Google OAuth |
 | Database | PostgreSQL (current stable major) |
 | ORM | Drizzle ORM |
-| PWA | Serwist or the best-maintained compatible solution for the selected Next.js version |
+| PWA | Serwist via `@serwist/turbopack` (Next 16 builds with Turbopack); fallback `@serwist/next` with webpack builds only if the spike fails (ask first) |
 | Realtime | No implementation initially; keep backend extensible for WebSockets |
 | Tests | Vitest for unit tests; Playwright for browser/e2e tests |
-| Lint / format | ESLint (flat config, `eslint-config-next`, typescript-eslint) + Prettier, shared via `packages/config` |
+| Lint / format | ESLint 9 (flat config, `eslint-config-next`, typescript-eslint; not 10 until `eslint-config-next` supports it) + Prettier, shared via `packages/config` |
 | Git hooks | Lefthook (format + lint on staged files) |
 | Dependency updates | Renovate (grouped monorepo updates, pnpm catalog aware) |
 | CI / registry | GitHub Actions; images published to GitHub Container Registry (GHCR) |
@@ -171,6 +173,7 @@ Use Better Auth with Google OAuth.
 - Better Auth runs in the shared Fastify API.
 - Persist users, accounts, and sessions in PostgreSQL using Better Auth's supported Drizzle integration.
 - Implement sign-in, sign-out, current-session retrieval and self-service account deletion (Better Auth's documented user-deletion feature, with confirmation).
+- **Re-authentication before deletion:** Better Auth requires a fresh session (default `freshAge` 1 day) to delete a social-only account. If the session is not fresh, the Hub sends the user through Google sign-in again (`returnTo` the delete page), then asks for a typed confirmation (`DELETE`). Do not set `freshAge: 0` and do not add email verification.
 - **Session lifetime** (`docs/decisions/0023-session-lifetime.md`): 30 days, sliding — `expiresIn` 30 days, `updateAge` 1 day. Do not enable Better Auth's session cookie cache, so sign-out, account deletion and session revocation take effect on the next request.
 - **Open sign-up:** any Google account may register. Consequently:
   - Every API endpoint that touches user data scopes it to the session's user id; never accept a user id from the browser as authority.
@@ -473,6 +476,7 @@ All frontend apps are independently installable PWAs.
 - Do not implement push notifications or offline synchronization initially.
 - Document HTTPS requirements and how to test PWA behavior (locally via `*.frigi.test` HTTPS).
 - Verify compatibility of the selected PWA solution with the current Next.js App Router version and bundler; if incompatible, stop and ask (§2).
+- Serwist via `@serwist/turbopack`: `withSerwist` in `next.config.ts`, the service worker source `app/sw.ts`, registration via its React provider, and the SDK-required route handler `app/serwist/[path]/route.ts` (allowed under the infrastructure-only Route Handler rule). Exclude `/serwist/*` from the request proxy matcher where required and from caching; add `worker-src 'self'` to the CSP. Spike it in Hello first; if it fails, stop and ask before switching to webpack builds.
 
 ## 11a. Security headers and CSP
 
