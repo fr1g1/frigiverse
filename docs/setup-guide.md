@@ -14,11 +14,13 @@ Claude can implement code, Docker Compose files, env validation, SDK integration
 
 ### 2.1 Tools
 
-- [ ] Node.js 24 LTS. With nvm: `nvm install 24 && nvm use 24` (the repo will pin it in `.nvmrc`).
-- [ ] pnpm via Corepack: `corepack enable` (version pinned by the root `packageManager` field).
+- [ ] fnm (Fast Node Manager): `curl -fsSL https://fnm.vercel.app/install | bash` (or `cargo install fnm`), then add `eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"` to `~/.bashrc`. Official docs: https://github.com/Schniz/fnm
+- [ ] Node.js 24 LTS: in the repository run `fnm install` (reads `.node-version`). Do not use the Fedora `nodejs24` package; it lags upstream security releases.
+- [ ] pnpm 11: `npm install -g pnpm@11` once; pnpm then switches to the exact version pinned in the root `package.json` automatically. (Corepack is experimental in Node 24 and removed from Node 25, so it is not used.)
 - [ ] Docker **Engine** with Compose v2, using the `default` context (`docker context use default`). Docker Desktop is not assumed by these docs.
 - [ ] Git, GitHub CLI (`gh auth login`), Claude Code.
-- [ ] mkcert: `sudo dnf install mkcert nss-tools`, then `mkcert -install` (installs a local CA trusted by Firefox/Chrome).
+- [ ] mkcert (not installed yet): `sudo dnf install mkcert nss-tools`, then `mkcert -install` (installs a local CA trusted by Firefox/Chrome).
+- [ ] Playwright browsers: `pnpm exec playwright install chromium` (without `--with-deps`, which uses apt). Fedora is not an officially supported Playwright OS; local e2e usually works, but the authoritative e2e run is on Ubuntu in CI.
 - [ ] Lefthook hooks are installed automatically by `pnpm install` *(verify once implemented)*.
 
 ### 2.2 Local hostnames

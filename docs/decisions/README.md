@@ -33,7 +33,7 @@ Template:
 | [0013](0013-jit-packages-bundled-api.md) | Just-in-time TS packages, bundled API | Accepted |
 | [0014](0014-database-backups-and-migrations.md) | Local nightly backups, manual profile-gated migrations | Accepted (amended by 0019) |
 | [0015](0015-open-signup.md) | Open sign-up with user-data safeguards and self-service deletion | Accepted |
-| [0016](0016-tooling-baseline.md) | Node 24, ESLint+Prettier, Lefthook, Renovate, MIT | Accepted |
+| [0016](0016-tooling-baseline.md) | Node 24, ESLint+Prettier, Lefthook, Renovate, MIT | Accepted (amended by 0024) |
 | [0017](0017-access-modes.md) | Per-route access modes; API defaults to `auth: "required"` | Accepted |
 | [0018](0018-frontend-framework-contract.md) | Other frontend frameworks via an integration contract | Accepted |
 | [0019](0019-release-pinning-and-rollback.md) | Pinned SHA image tags, expand/contract migrations, tag-based rollback | Accepted |
@@ -41,3 +41,4 @@ Template:
 | [0021](0021-uptime-monitoring-and-alerts.md) | External uptime checks and Sentry alert rules | Accepted |
 | [0022](0022-api-error-envelope.md) | API error envelope with stable codes | Accepted |
 | [0023](0023-session-lifetime.md) | 30-day sliding sessions, no cookie cache | Accepted |
+| [0024](0024-verified-toolchain-2026-11.md) | Verified toolchain pins (TS 6, ESLint 9, pnpm 11, @serwist/turbopack, re-auth before deletion) | Accepted |

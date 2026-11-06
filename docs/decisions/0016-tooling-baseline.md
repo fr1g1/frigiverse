@@ -1,6 +1,6 @@
 # 0016. Node 24, ESLint+Prettier, Lefthook, Renovate, MIT
 
-- Status: Accepted
+- Status: Accepted (amended by [0024](0024-verified-toolchain-2026-11.md): `.node-version` + fnm instead of `.nvmrc`, pnpm 11, ESLint 9, TypeScript 6.0.x)
 - Date: 2026-11-03
 
 ## Decision

@@ -26,7 +26,7 @@ A self-hostable personal application platform: a pnpm + Turborepo monorepo with 
 ## Target developer workflow
 
 ```bash
-# prerequisites: Node 24 (see .nvmrc), pnpm (packageManager field), Docker Engine, mkcert
+# prerequisites: Node 24 via fnm (see .node-version), pnpm 11 (packageManager field), Docker Engine, mkcert
 pnpm install
 docker compose -f compose.dev.yml up -d   # PostgreSQL for development
 pnpm db:migrate
